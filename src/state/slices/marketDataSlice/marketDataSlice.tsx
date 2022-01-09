@@ -1,10 +1,11 @@
 import { createSelector, createSlice } from '@reduxjs/toolkit'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react'
 import { CAIP19 } from '@shapeshiftoss/caip'
-import { findAll, findByCaip19, findPriceHistoryByCaip19 } from '@shapeshiftoss/market-service'
 import { HistoryData, HistoryTimeframe, MarketCapResult, MarketData } from '@shapeshiftoss/types'
 import isEmpty from 'lodash/isEmpty'
 import { ReduxState } from 'state/reducer'
+
+const marketService = import('@shapeshiftoss/market-service')
 
 export type PriceHistoryData = {
   [k: CAIP19]: HistoryData[]
@@ -71,7 +72,7 @@ export const marketApi = createApi({
   endpoints: build => ({
     findAll: build.query<MarketCapResult, void>({
       // top 1000 assets
-      queryFn: async () => ({ data: await findAll({ count: 1000 }) }),
+      queryFn: async () => ({ data: await (await marketService).findAll({ count: 1000 }) }),
       onCacheEntryAdded: async (_args, { dispatch, cacheDataLoaded, getCacheEntry }) => {
         await cacheDataLoaded
         const data = getCacheEntry().data
@@ -81,7 +82,7 @@ export const marketApi = createApi({
     findByCaip19: build.query<MarketCapResult, CAIP19>({
       queryFn: async (caip19: CAIP19) => {
         try {
-          const marketData = await findByCaip19({ caip19 })
+          const marketData = await (await marketService).findByCaip19({ caip19 })
           if (!marketData) throw new Error()
           const data = { [caip19]: marketData }
           return { data }
@@ -99,7 +100,9 @@ export const marketApi = createApi({
     findPriceHistoryByCaip19: build.query<HistoryData[], FindPriceHistoryByCaip19Args>({
       queryFn: async ({ assetId, timeframe }) => {
         try {
-          const data = await findPriceHistoryByCaip19({ timeframe, caip19: assetId })
+          const data = await (
+            await marketService
+          ).findPriceHistoryByCaip19({ timeframe, caip19: assetId })
           return { data }
         } catch (e) {
           const error = {
