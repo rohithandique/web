@@ -5,7 +5,7 @@ import { BigNumber } from 'bignumber.js'
 import { MAX_ALLOWANCE } from 'constants/allowance'
 import { toLower } from 'lodash'
 import isNil from 'lodash/isNil'
-import Web3 from 'web3'
+import type Web3 from 'web3'
 import { TransactionReceipt } from 'web3-core/types'
 import { bnOrZero } from 'lib/bignumber/bignumber'
 
@@ -26,9 +26,13 @@ import {
   TxInput
 } from './yearn-types'
 
-export type ConstructorArgs = {
+export type CreateArgs = {
   adapter: ChainAdapter<ChainTypes.Ethereum>
   providerUrl: string
+}
+
+export type ConstructorArgs = CreateArgs & {
+  web3: typeof Web3
 }
 
 export type YearnVault = {
@@ -69,15 +73,22 @@ export class YearnVaultApi {
   public yearnClient: AxiosInstance
   private ssRouterContract: any
 
-  constructor({ adapter, providerUrl }: ConstructorArgs) {
+  protected constructor({ adapter, providerUrl, web3 }: ConstructorArgs) {
     this.adapter = adapter
-    this.provider = new Web3.providers.HttpProvider(providerUrl)
-    this.web3 = new Web3(this.provider)
+    this.provider = new web3.providers.HttpProvider(providerUrl)
+    this.web3 = new web3(this.provider)
     this.yearnClient = axios.create({
       baseURL: 'https://api.yearn.finance/v1'
     })
     this.ssRouterContract = new this.web3.eth.Contract(ssRouterAbi, ssRouterContractAddress)
     this.vaults = []
+  }
+
+  static async create(args: CreateArgs) {
+    return new YearnVaultApi({
+      ...args,
+      web3: (await import('web3')).default
+    })
   }
 
   async initialize() {
