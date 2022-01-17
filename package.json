@@ -43,6 +43,7 @@
     "bs58check": "^2.1.2",
     "buffer": "^6.0.3",
     "chakra-ui-steps": "^1.5.0",
+    "comlink": "^4.3.1",
     "crypto-browserify": "^3.12.0",
     "crypto-js": "^4.1.1",
     "dayjs": "^1.10.6",
@@ -120,7 +121,10 @@
     ]
   },
   "jest": {
-    "collectCoverageFrom": []
+    "collectCoverageFrom": [],
+    "coveragePathIgnorePatterns": [
+      ".*\\.webpack\\.[^.]+$"
+    ]
   },
   "browserslist": {
     "production": [
@@ -173,6 +177,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "fast-json-stable-stringify": "^2.1.0",
+    "glob": "^7.2.0",
     "prettier": "^2.3.2",
     "react-app-rewired": "^2.1.9",
     "ssri": "^8.0.1",
@@ -183,6 +188,7 @@
     "web3-utils": "^1.5.2",
     "webpack": "5.65.0",
     "webpack-subresource-integrity": "^5.0.0",
+    "worker-loader": "^3.0.8",
     "yarn-minify": "^1.0.1"
   },
   "resolutions": {
