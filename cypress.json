@@ -1,3 +1,5 @@
 {
-  "projectId": "5mmhr5"
+  "baseUrl": "http://localhost:3000/",
+  "projectId": "5mmhr5",
+  "chromeWebSecurity": false
 }
