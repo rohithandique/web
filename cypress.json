@@ -1,5 +1,7 @@
 {
   "baseUrl": "http://localhost:3000/",
   "projectId": "5mmhr5",
-  "chromeWebSecurity": false
+  "chromeWebSecurity": false,
+  "nativeWalletSeed": "Passed via CLI for now",
+  "nativeWalletPassword": "Passed via CLI for now"
 }
